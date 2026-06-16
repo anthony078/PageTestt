@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KicksOnFire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Script propio (defer = se ejecuta después del DOM) -->
+  <script src="js/script.js" defer></script>
+</head>
+
+<body>
+<a href="#main-content" class="skip-link" style="padding:12px 20px;font-size:14px;">Saltar al contenido</a>
+
+<!-- ── A11Y TOAST ── -->
+<div id="a11y-toast" role="status" aria-live="polite"></div>
+
+<!-- ── A11Y FAB ── -->
+<button id="a11y-fab" onclick="toggleA11yPanel()" aria-label="Menú de accesibilidad" aria-expanded="false">
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/></svg>
+  <span class="a11y-tooltip">Accesibilidad (CTRL+U)</span>
+</button>
+
+<!-- ── A11Y PANEL ── -->
+<div id="a11y-panel" role="dialog" aria-modal="true" aria-label="Menú de Accesibilidad">
+  <div class="a11y-header">
+    <div>
+      <div class="a11y-header-title">Accesibilidad</div>
+      <div class="a11y-header-sub">CTRL+U para abrir/cerrar</div>
+    </div>
+    <button class="a11y-close-btn" onclick="toggleA11yPanel()" aria-label="Cerrar">✕</button>
+  </div>
+  <div class="a11y-lang-row">
+    <span class="a11y-lang-badge">ES</span>
+    <span style="color:var(--text-mid);font-size:13px;">Español</span>
+  </div>
+  <div class="a11y-profile-row" onclick="showA11yProfiles()" role="button" tabindex="0">
+    <div class="a11y-profile-icon-wrap">♿</div>
+    <span style="font-weight:600;color:var(--text-hi);font-size:13px;">Perfiles de accesibilidad</span>
+    <span style="margin-left:auto;color:var(--text-low);">›</span>
+  </div>
+  <div class="a11y-size-row">
+    <span style="font-size:13px;font-weight:600;color:var(--text-mid);">Widget grande</span>
+    <button class="a11y-switch" id="xl-switch" onclick="toggleXLWidget(this)" role="switch" aria-checked="true" aria-label="Widget grande"></button>
+  </div>
+  <div class="a11y-grid" id="a11y-grid" role="list">
+    <button class="a11y-tile" id="tile-read" onclick="a11yAction('read',this)" aria-pressed="false" aria-label="Leer página">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+      <span class="a11y-tile-label">Leer página</span>
+    </button>
+    <button class="a11y-tile" id="tile-contrast" onclick="a11yAction('contrast',this)" aria-pressed="false" aria-label="Alto contraste">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20z" fill="currentColor" opacity=".7"/></svg></div>
+      <span class="a11y-tile-label">Contraste +</span>
+    </button>
+    <button class="a11y-tile" id="tile-links" onclick="a11yAction('links',this)" aria-pressed="false" aria-label="Resaltar enlaces">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
+      <span class="a11y-tile-label">Resaltar links</span>
+    </button>
+    <button class="a11y-tile" id="tile-fontsize" onclick="a11yAction('fontsize',this)" aria-pressed="false" aria-label="Agrandar texto">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+      <span class="a11y-tile-label">Texto grande</span>
+    </button>
+    <button class="a11y-tile" id="tile-animations" onclick="a11yAction('animations',this)" aria-pressed="false" aria-label="Detener animaciones">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/></svg></div>
+      <span class="a11y-tile-label">Sin animaciones</span>
+    </button>
+    <button class="a11y-tile" id="tile-dyslexia" onclick="a11yAction('dyslexia',this)" aria-pressed="false" aria-label="Fuente dislexia">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div>
+      <span class="a11y-tile-label">Dislexia</span>
+    </button>
+    <button class="a11y-tile" id="tile-cursor" onclick="a11yAction('cursor',this)" aria-pressed="false" aria-label="Cursor grande">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l7 18 3-7 7-3z"/></svg></div>
+      <span class="a11y-tile-label">Cursor grande</span>
+    </button>
+    <button class="a11y-tile" id="tile-spacing" onclick="a11yAction('spacing',this)" aria-pressed="false" aria-label="Espaciado texto">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+      <span class="a11y-tile-label">Espaciado</span>
+    </button>
+    <button class="a11y-tile" id="tile-saturation" onclick="a11yAction('saturation',this)" aria-pressed="false" aria-label="Menos saturación">
+      <div class="a11y-tile-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div>
+      <span class="a11y-tile-label">Saturación</span>
+    </button>
+  </div>
+  <div class="a11y-reset-row">
+    <button class="a11y-reset-btn" onclick="resetAllA11y()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+      Restablecer todo
+    </button>
+  </div>
+  <div class="a11y-move-row">⚙ Configuración del widget ›</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     NAV
+═══════════════════════════════════════════ -->
+<header class="nav-wrap sticky top-0 z-50" role="banner">
+  <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4" aria-label="Navegación principal">
+
+    <!-- Logo -->
+    <a href="#hero" class="flex items-center gap-2" style="text-decoration:none;" aria-label="KicksOnFire inicio">
+      <div style="width:36px;height:36px;border-radius:10px;background:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 16px var(--brand-glow);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2 12 5.5 8 2l-4.38 1.46a2 2 0 0 0-1.34 2.23l2.1 12.62A2 2 0 0 0 6.35 20h11.3a2 2 0 0 0 1.97-1.69l2.1-12.62a2 2 0 0 0-1.34-2.23z"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M12 5.5V10"/></svg>
+      </div>
+      <span class="nav-logo-brand">Kicks<span>On</span>Fire</span>
+    </a>
+ 
+
+    <div class="hidden md:flex items-center gap-6">
+      <a href="#hero" class="nav-link active">Inicio</a>
+      <a href="#tryOn" class="nav-link">Probador</a>
+      <a href="#outfits" class="nav-link">Outfits</a>
+      <a href="#analytics" class="nav-link">Analytics</a>
+    </div>
+
+    <!-- Controles derecha -->
+    <div class="flex items-center gap-2">
+      <!-- Tema -->
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span aria-hidden="true" style="font-size:13px;">☀️</span>
+        <button class="theme-toggle" onclick="toggleTheme()" role="switch" aria-checked="true" id="theme-toggle-btn" aria-label="Modo día/noche"></button>
+        <span aria-hidden="true" style="font-size:13px;">🌙</span>
+      </div>
+
+      <!-- Redes -->
+      <div class="hidden md:flex items-center gap-1 pl-2" style="border-left:1px solid var(--border);">
+        <a href="#" class="nav-icon-btn" title="Instagram" aria-label="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="#" class="nav-icon-btn" title="TikTok" aria-label="TikTok">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.75a8.16 8.16 0 0 0 4.77 1.52V6.82a4.85 4.85 0 0 1-1-.13z"/></svg>
+        </a>
+        <a href="#" class="nav-icon-btn" title="WhatsApp" aria-label="WhatsApp">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+        </a>
+      </div>
+<a href="#" class="nav-icon-btn" title="Facebook" aria-label="Facebook">
+  <svg width="14" height="14" viewBox="0 0 24 24">
+    <path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.19 2.23.19v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12z"/>
+  </svg>
+</a>
+
+<a href="#" class="nav-icon-btn" title="Kick" aria-label="Kick">
+  <svg width="14" height="14" viewBox="0 0 24 24">
+    <path d="M4 3h5.5v7.2L15.7 3H21l-7.2 8.1L21 21h-5.5l-6-8v8H4V3z"/>
+  </svg>
+</a>
+      <!-- Carrito -->
+      <button class="cart-badge-btn" onclick="document.getElementById('tryOn').scrollIntoView({behavior:'smooth'})" aria-label="Carrito de compras">
+        <i data-lucide="shopping-bag" style="width:17px;height:17px;color:var(--text-mid);"></i>
+        <span id="nav-cart-count">0</span>
+      </button>
+
+      <!-- CTA -->
+      <button class="cta-nav neon-pulse" onclick="document.getElementById('tryOn').scrollIntoView({behavior:'smooth'})">
+        <i data-lucide="zap" style="width:13px;height:13px;"></i> Probar
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content" tabindex="-1">
+
+<!-- ═══════════════════════════════════════════
+     HERO — Rediseñado
+═══════════════════════════════════════════ -->
+<section id="hero" aria-labelledby="hero-heading">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="max-w-7xl mx-auto w-full relative z-10">
+    <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-0">
+
+      <!-- Columna izquierda -->
+      <div class="flex-1">
+        <div class="hero-tag fade-in-up fade-delay-1">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Experiencia Premium · 2026
+        </div>
+
+        <h1 id="hero-heading" class="hero-title fade-in-up fade-delay-2">
+          Tu<br>Probador<br><span>Virtual</span>
+        </h1>
+
+        <p class="hero-desc fade-in-up fade-delay-3">
+          Combina estilos urbanos y deportivos en tu avatar personalizado. Prueba antes de comprar — la moda del futuro, hoy.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mb-10 fade-in-up fade-delay-4">
+          <button onclick="document.getElementById('tryOn').scrollIntoView({behavior:'smooth'})" class="btn-hero-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Comenzar Ahora
+          </button>
+          <button onclick="document.getElementById('analytics').scrollIntoView({behavior:'smooth'})" class="btn-hero-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Ver Analytics
+          </button>
+        </div>
+
+        <!-- Stats row -->
+        <div class="flex gap-8 fade-in-up fade-delay-4" role="list" aria-label="Estadísticas">
+          <div role="listitem">
+            <div class="hero-stat-val">20+</div>
+            <div class="hero-stat-label">Productos</div>
+          </div>
+          <div style="width:1px;background:var(--border-hi);height:40px;align-self:center;"></div>
+          <div role="listitem">
+            <div class="hero-stat-val" style="color:var(--accent);">3</div>
+            <div class="hero-stat-label">Presets</div>
+          </div>
+          <div style="width:1px;background:var(--border-hi);height:40px;align-self:center;"></div>
+          <div role="listitem">
+            <div class="hero-stat-val" style="color:var(--accent-blue);">∞</div>
+            <div class="hero-stat-label">Combinaciones</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha — Orb animado -->
+      <div class="flex justify-center items-center flex-shrink-0 fade-in-up fade-delay-3" aria-hidden="true">
+        <div class="hero-orb">
+          <div class="hero-orb-ring">
+            <svg viewBox="0 0 140 140" width="170" height="170">
+              <!-- Zapatilla estilizada -->
+              <path d="M20 90 Q20 70 35 64 L95 64 Q118 64 120 78 L120 88 Q120 102 105 102 L20 102 Q17 102 17 96 Z" fill="var(--brand)" opacity=".95"/>
+              <path d="M17 96 L120 96 Q120 108 105 108 L20 108 Q17 108 17 102 Z" fill="var(--brand-lo)" opacity=".6"/>
+              <!-- Lengüeta -->
+              <path d="M55 64 L70 48 L85 64" fill="var(--brand-hi)" opacity=".8"/>
+              <!-- Perforaciones -->
+              <circle cx="60" cy="80" r="3" fill="var(--brand-text)" opacity=".35"/>
+              <circle cx="74" cy="80" r="3" fill="var(--brand-text)" opacity=".35"/>
+              <circle cx="88" cy="80" r="3" fill="var(--brand-text)" opacity=".35"/>
+              <!-- Logo marca -->
+              <path d="M30 88 L50 74" stroke="var(--brand-text)" stroke-width="3" stroke-linecap="round" opacity=".4"/>
+              <text x="70" y="122" text-anchor="middle" fill="var(--brand-lo)" style="font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;">KICKS_v2.0</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE STRIP -->
+<div class="feature-strip" aria-hidden="true">
+  <div class="feature-strip-inner">
+    <div class="feature-item"><div class="feature-dot"></div>Probador Virtual</div>
+    <div class="feature-item"><div class="feature-dot"></div>Avatar Personalizado</div>
+    <div class="feature-item"><div class="feature-dot"></div>Outfits Completos</div>
+    <div class="feature-item"><div class="feature-dot"></div>Compra con 1 Click</div>
+    <div class="feature-item"><div class="feature-dot"></div>Analytics en Tiempo Real</div>
+    <div class="feature-item"><div class="feature-dot"></div>20+ Productos</div>
+    <div class="feature-item"><div class="feature-dot"></div>Probador Virtual</div>
+    <div class="feature-item"><div class="feature-dot"></div>Avatar Personalizado</div>
+    <div class="feature-item"><div class="feature-dot"></div>Outfits Completos</div>
+    <div class="feature-item"><div class="feature-dot"></div>Compra con 1 Click</div>
+    <div class="feature-item"><div class="feature-dot"></div>Analytics en Tiempo Real</div>
+    <div class="feature-item"><div class="feature-dot"></div>20+ Productos</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PROBADOR
+═══════════════════════════════════════════ -->
+<section id="tryOn" class="w-full px-4 py-16" aria-labelledby="tryon-heading">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <h2 id="tryon-heading" class="section-heading">Probador <span>Interactivo</span></h2>
+      <p class="section-sub">Selecciona prendas y mira cómo lucen en tu avatar</p>
+      <div class="flex justify-center gap-2 mt-5" role="group" aria-label="Género del avatar">
+        <button onclick="setGender('male')" id="btn-male" class="px-5 py-2 rounded-full text-sm font-semibold transition tab-active flex items-center gap-2" aria-pressed="true">
+          <i data-lucide="user" style="width:15px;height:15px;" aria-hidden="true"></i> Hombre
+        </button>
+        <button onclick="setGender('female')" id="btn-female" class="px-5 py-2 rounded-full text-sm font-semibold transition tab-inactive flex items-center gap-2" aria-pressed="false">
+          <i data-lucide="user" style="width:15px;height:15px;" aria-hidden="true"></i> Mujer
+        </button>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Avatar panel -->
+      <div class="lg:w-[300px] flex-shrink-0">
+        <div class="panel p-4 avatar-area flex flex-col items-center">
+          <div class="mono text-xs mb-3 tracking-widest" style="color:var(--text-low);" aria-hidden="true">◈ AVATAR PREVIEW</div>
+          <div id="avatar-container" class="relative" style="width:240px;height:400px;" role="img" aria-label="Avatar visual">
+            <svg id="avatar-svg" viewBox="0 0 240 400" width="240" height="400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <ellipse cx="120" cy="390" rx="50" ry="8" fill="var(--brand-glow)"/>
+              <g id="layer-shoes"><rect x="78" y="355" width="35" height="18" rx="9" fill="var(--surface3)"/><rect x="127" y="355" width="35" height="18" rx="9" fill="var(--surface3)"/></g>
+              <g id="layer-pants">
+                <path d="M88 230 L82 350 H118 L120 230 Z" fill="var(--surface3)" stroke="var(--border)" stroke-width="0.5"/>
+                <path d="M152 230 L158 350 H122 L120 230 Z" fill="var(--surface3)" stroke="var(--border)" stroke-width="0.5"/>
+              </g>
+              <g id="body-base">
+                <rect x="108" y="88" width="24" height="20" rx="4" fill="#c8956c"/>
+                <path d="M68 115 Q55 180 60 240" stroke="#c8956c" stroke-width="18" stroke-linecap="round" fill="none"/>
+                <path d="M172 115 Q185 180 180 240" stroke="#c8956c" stroke-width="18" stroke-linecap="round" fill="none"/>
+                <circle cx="60" cy="244" r="10" fill="#c8956c"/>
+                <circle cx="180" cy="244" r="10" fill="#c8956c"/>
+              </g>
+              <g id="layer-top">
+                <path d="M78 105 Q72 108 62 120 L68 125 L82 115 L82 225 H158 L158 115 L172 125 L178 120 Q168 108 162 105 Q148 95 120 95 Q92 95 78 105Z" fill="var(--surface3)" stroke="var(--border)" stroke-width="0.5"/>
+              </g>
+              <g id="avatar-head">
+                <ellipse cx="120" cy="60" rx="34" ry="38" fill="#c8956c"/>
+                <g id="hair-male"><path d="M86 52 Q86 22 120 22 Q154 22 154 52 Q154 38 120 35 Q86 38 86 52Z" fill="#1a1a1a"/></g>
+                <g id="hair-female" style="display:none;">
+                  <path d="M82 52 Q82 18 120 18 Q158 18 158 52 L160 85 Q155 80 154 60 Q154 38 120 35 Q86 38 86 60 Q85 80 80 85 Z" fill="#1a1a1a"/>
+                  <path d="M80 85 Q75 130 78 160" stroke="#1a1a1a" stroke-width="14" stroke-linecap="round" fill="none"/>
+                  <path d="M160 85 Q165 130 162 160" stroke="#1a1a1a" stroke-width="14" stroke-linecap="round" fill="none"/>
+                </g>
+                <circle cx="107" cy="58" r="3.5" fill="#111"/>
+                <circle cx="133" cy="58" r="3.5" fill="#111"/>
+                <circle cx="108" cy="57" r="1.2" fill="#fff"/>
+                <circle cx="134" cy="57" r="1.2" fill="#fff"/>
+                <path d="M100 49 Q107 46 114 49" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M126 49 Q133 46 140 49" stroke="#111" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M112 72 Q120 79 128 72" stroke="#8B5E3C" stroke-width="2" fill="none" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <div id="outfit-summary" class="w-full mt-3 space-y-1.5" role="region" aria-label="Resumen del outfit" aria-live="polite"></div>
+          <button onclick="resetOutfit()" class="btn-ghost mt-3 w-full py-2" style="font-size:13px;justify-content:center;" aria-label="Reiniciar outfit">
+            <i data-lucide="refresh-cw" style="width:13px;height:13px;" aria-hidden="true"></i> Reiniciar Outfit
+          </button>
+        </div>
+      </div>
+
+      <!-- Catálogo + Carrito -->
+      <div class="flex-1 flex flex-col gap-4">
+        <!-- Catálogo -->
+        <div class="panel p-4 flex-1">
+          <div class="flex gap-2 mb-4 overflow-x-auto pb-1 custom-scroll" role="tablist">
+            <button onclick="setCategory('tops')" data-cat="tops" class="cat-tab px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition tab-active flex items-center gap-1.5" role="tab" aria-selected="true">
+              <i data-lucide="shirt" style="width:13px;height:13px;" aria-hidden="true"></i> Tops
+            </button>
+            <button onclick="setCategory('pants')" data-cat="pants" class="cat-tab px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition tab-inactive flex items-center gap-1.5" role="tab" aria-selected="false">
+              <i data-lucide="scissors" style="width:13px;height:13px;" aria-hidden="true"></i> Pantalones
+            </button>
+            <button onclick="setCategory('shoes')" data-cat="shoes" class="cat-tab px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition tab-inactive flex items-center gap-1.5" role="tab" aria-selected="false">
+              <i data-lucide="footprints" style="width:13px;height:13px;" aria-hidden="true"></i> Zapatillas
+            </button>
+          </div>
+          <div id="catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 max-h-[380px] overflow-y-auto custom-scroll pr-1" role="tabpanel" aria-live="polite"></div>
+        </div>
+
+        <!-- Carrito -->
+        <div class="panel p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <div style="width:32px;height:32px;border-radius:9px;background:var(--brand-subtle);border:1px solid var(--brand-border);display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="shopping-bag" style="width:16px;height:16px;color:var(--brand);" aria-hidden="true"></i>
+              </div>
+              <h3 class="panel-title">Carrito</h3>
+            </div>
+            <span id="cart-count" class="text-xs px-2.5 py-1 rounded-full font-bold mono" style="background:var(--brand);color:var(--brand-text);" aria-live="polite">0</span>
+          </div>
+          <div id="cart-items" class="space-y-2 max-h-[160px] overflow-y-auto custom-scroll mb-3" role="list" aria-live="polite"></div>
+          <div class="pt-3 mt-1" style="border-top:1px solid var(--border);">
+            <div class="flex items-center justify-between mb-3">
+              <span style="font-size:13px;color:var(--text-low);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-family:'Space Mono',monospace;">Total</span>
+              <span id="cart-total" aria-live="polite">S/ 0</span>
+            </div>
+            <button onclick="checkout()" class="btn-primary w-full py-3" style="font-size:14px;justify-content:center;border-radius:var(--radius-sm);">
+              <i data-lucide="credit-card" style="width:16px;height:16px;" aria-hidden="true"></i> Proceder al Pago
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     OUTFITS PRESETS
+═══════════════════════════════════════════ -->
+<section id="outfits" class="w-full px-4 pb-16" aria-labelledby="outfits-heading">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-8">
+      <h2 id="outfits-heading" class="section-heading">Outfits <span>Completos</span></h2>
+      <p class="section-sub">Combinaciones listas para aplicar de inmediato</p>
+    </div>
+    <div id="outfit-presets" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="list"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ANALYTICS
+═══════════════════════════════════════════ -->
+<section id="analytics" class="w-full px-4 pb-16" aria-labelledby="analytics-heading">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-8">
+      <h2 id="analytics-heading" class="section-heading">Web <span>Analytics</span></h2>
+      <p class="section-sub">Tendencias de compra y comportamiento del usuario</p>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" role="list">
+      <div class="stat-card" role="listitem">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="stat-label mb-2">Total Ventas</p>
+            <p class="stat-val">S/ <span id="total-sales">0</span></p>
+          </div>
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--brand-subtle);border:1px solid var(--brand-border);display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="trending-up" style="width:20px;height:20px;color:var(--brand);" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="stat-label mb-2">Productos</p>
+            <p class="stat-val" style="color:var(--accent);"><span id="total-items">0</span> <span style="font-size:18px;">prendas</span></p>
+          </div>
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(224,123,0,.10);border:1px solid rgba(224,123,0,.20);display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="package" style="width:20px;height:20px;color:var(--accent);" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="stat-label mb-2">Cat. Popular</p>
+            <p class="stat-val" style="color:var(--accent-blue);font-size:28px;"><span id="top-category">—</span></p>
+          </div>
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(26,86,204,.10);border:1px solid rgba(26,86,204,.20);display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="star" style="width:20px;height:20px;color:var(--accent-blue);" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="stat-label mb-2">Ticket Prom.</p>
+            <p class="stat-val">S/ <span id="avg-ticket">0</span></p>
+          </div>
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--brand-subtle);border:1px solid var(--brand-border);display:flex;align-items:center;justify-content:center;">
+            <i data-lucide="bar-chart-3" style="width:20px;height:20px;color:var(--brand);" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="panel p-6">
+        <h3 class="panel-title">🏆 Productos Más Vendidos</h3>
+        <div class="chart-container"><canvas id="topProductsChart" role="img" aria-label="Productos más vendidos"></canvas></div>
+      </div>
+      <div class="panel p-6">
+        <h3 class="panel-title">📊 Distribución por Categoría</h3>
+        <div class="chart-container"><canvas id="categoryChart" role="img" aria-label="Distribución por categoría"></canvas></div>
+      </div>
+      <div class="panel p-6">
+        <h3 class="panel-title">👕 Outfits Más Utilizados</h3>
+        <div class="chart-container"><canvas id="outfitsChart" role="img" aria-label="Outfits más utilizados"></canvas></div>
+      </div>
+      <div class="panel p-6">
+        <h3 class="panel-title">📈 Tendencia de Ventas</h3>
+        <div class="chart-container"><canvas id="trendChart" role="img" aria-label="Tendencia de ventas"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="panel p-6">
+      <h3 class="panel-title mb-4">📋 Último Pedido</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm" aria-label="Historial de pedidos">
+          <thead>
+            <tr style="border-bottom:1.5px solid var(--border);">
+              <th scope="col" class="text-left py-3 px-4" style="color:var(--text-low);font-size:10px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;font-family:'Space Mono',monospace;">Producto</th>
+              <th scope="col" class="text-left py-3 px-4" style="color:var(--text-low);font-size:10px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;font-family:'Space Mono',monospace;">Categoría</th>
+              <th scope="col" class="text-right py-3 px-4" style="color:var(--text-low);font-size:10px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;font-family:'Space Mono',monospace;">Precio</th>
+              <th scope="col" class="text-center py-3 px-4" style="color:var(--text-low);font-size:10px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;font-family:'Space Mono',monospace;">Hora</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr><td colspan="4" class="py-10 text-center" style="color:var(--text-low);font-size:13px;">Sin datos aún. ¡Realiza tu primera compra!</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="w-full py-12 px-4">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-10" style="border-bottom:1px solid var(--border);">
+    <div class="sm:col-span-2 lg:col-span-1">
+      <div class="flex items-center gap-2 mb-4">
+        <div style="width:32px;height:32px;border-radius:9px;background:var(--brand);display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2 12 5.5 8 2l-4.38 1.46a2 2 0 0 0-1.34 2.23l2.1 12.62A2 2 0 0 0 6.35 20h11.3a2 2 0 0 0 1.97-1.69l2.1-12.62a2 2 0 0 0-1.34-2.23z"/></svg>
+        </div>
+        <span class="footer-logo">Kicks<span>On</span>Fire</span>
+      </div>
+      <p style="font-size:13px;color:var(--text-low);line-height:1.7;max-width:200px;">Probador virtual de ropa urbana y deportiva. La moda del futuro, hoy.</p>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text-low);letter-spacing:.10em;font-weight:700;margin-bottom:14px;text-transform:uppercase;font-family:'Space Mono',monospace;">Tienda</p>
+      <a class="footer-link">Polos &amp; Casacas</a>
+      <a class="footer-link">Pantalones</a>
+      <a class="footer-link">Zapatillas</a>
+      <a class="footer-link">Outfits Completos</a>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text-low);letter-spacing:.10em;font-weight:700;margin-bottom:14px;text-transform:uppercase;font-family:'Space Mono',monospace;">Probador</p>
+      <a class="footer-link" onclick="document.getElementById('tryOn').scrollIntoView({behavior:'smooth'})">Probador Virtual</a>
+      <a class="footer-link">Avatar Masculino</a>
+      <a class="footer-link">Avatar Femenino</a>
+    </div>
+    <div>
+      <p style="font-size:10px;color:var(--text-low);letter-spacing:.10em;font-weight:700;margin-bottom:14px;text-transform:uppercase;font-family:'Space Mono',monospace;">Soporte</p>
+      <a class="footer-link">Preguntas Frecuentes</a>
+      <a class="footer-link">Guía de Tallas</a>
+      <a class="footer-link">Contáctanos</a>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 pt-6">
+    <span style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text-low);">KICKSONFIRE © 2026 — Todos los derechos reservados</span>
+    <div style="display:flex;gap:20px;">
+      <a class="footer-link" style="margin-bottom:0;font-size:11px;">Privacidad</a>
+      <a class="footer-link" style="margin-bottom:0;font-size:11px;">Términos</a>
+      <a class="footer-link" style="margin-bottom:0;font-size:11px;">Accesibilidad</a>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>
