@@ -266,6 +266,10 @@ function updateAvatar() {
   }
   renderOutfitSummary();
 }
+/*git add .
+git commit -m "Actualización"
+git push*/
+
 
 /* ── OUTFIT SUMMARY ── */
 function renderOutfitSummary() {

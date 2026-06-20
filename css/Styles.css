@@ -122,11 +122,12 @@ code,.mono{font-family:'Space Mono',monospace;}
    NAV — adaptado a ambos modos
    ============================================================ */
 .nav-wrap{
+  position:fixed;top:0;left:0;right:0;width:100%;z-index:50;
   background:var(--nav-bg);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--nav-border);
   box-shadow:var(--shadow-sm);
-  transition:background .3s,border-color .3s;
+  transition:transform .32s cubic-bezier(.22,1,.36,1),background .3s,border-color .3s;
 }
 .nav-logo-brand{color:var(--nav-text);font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;}
 .nav-logo-brand span{color:var(--brand);}
@@ -709,4 +710,511 @@ body.big-cursor *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org
   50%{
     transform:translateY(-10px);
   }
+}
+
+
+/* ============================================================
+   RESPONSIVE — CORRECCIONES GLOBALES
+   ============================================================ */
+
+/* Prevenir desbordamiento horizontal en html */
+html {
+  overflow-x: hidden;
+}
+
+/* Imágenes, videos e iframes adaptables */
+img, video, iframe, embed, object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tablas: scroll horizontal propio sin afectar la página */
+table {
+  min-width: 0;
+}
+
+/* A11Y panel: nunca exceder el ancho de la pantalla */
+#a11y-panel {
+  width: min(320px, calc(100vw - 32px));
+  right: 16px;
+  bottom: 88px;
+}
+
+/* A11Y toast: puede desbordarse a la izquierda en móvil */
+#a11y-toast {
+  right: 16px;
+  bottom: 88px;
+  max-width: calc(100vw - 32px);
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* ============================================================
+   RESPONSIVE — 320px – 479px (móviles muy pequeños)
+   ============================================================ */
+@media (max-width: 479px) {
+
+  /* NAV: emojis decorativos del toggle de tema ocultos para liberar espacio */
+  .nav-wrap nav span[aria-hidden="true"] {
+    display: none;
+  }
+
+  /* NAV: reducir gap del contenedor de controles */
+  .nav-wrap nav > div.flex.items-center.gap-2 {
+    gap: 6px;
+  }
+
+  /* NAV: CTA botón — solo ícono en pantallas muy pequeñas */
+  .cta-nav {
+    padding: 8px 10px;
+    font-size: 0;
+    letter-spacing: 0;
+    min-width: 34px;
+    gap: 0;
+    justify-content: center;
+  }
+  .cta-nav i,
+  .cta-nav svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* HERO: reducir padding para no desperdiciar espacio en móvil */
+  #hero {
+    padding-top: 56px;
+    padding-bottom: 40px;
+    min-height: auto;
+  }
+
+  /* HERO: botones en columna para que no se compriman */
+  .btn-hero-primary,
+  .btn-hero-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* HERO: reducir stats gap y tamaño de valor */
+  .hero-stat-val {
+    font-size: 28px;
+  }
+
+  /* HERO orb: reducido para que los anillos no se salgan */
+  .hero-orb {
+    width: min(220px, calc(100vw - 64px));
+    height: min(220px, calc(100vw - 64px));
+  }
+  .hero-orb-ring svg {
+    width: 110px !important;
+    height: 110px !important;
+  }
+  /* Reducir el anillo exterior que extiende 40px más allá del orb */
+  .hero-orb-ring::after {
+    inset: -20px;
+  }
+
+  /* PROBADOR: padding reducido */
+  #tryOn {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  /* CATALOG GRID: 2 columnas ya están bien, asegurar que las tarjetas no se desborden */
+  #catalog-grid .item-card {
+    min-width: 0;
+  }
+
+  /* PRESET CARDS: padding más compacto */
+  .preset-card {
+    padding: 16px;
+  }
+
+  /* STAT CARDS: padding más compacto */
+  .stat-card {
+    padding: 16px;
+  }
+
+  /* CHECKOUT MODAL: padding interior reducido en móvil */
+  .checkout-modal {
+    padding: 28px 18px 20px;
+    max-width: calc(100vw - 32px);
+  }
+
+  /* SECCIÓN FOOTER: texto centrado */
+  footer .max-w-7xl > div:last-child {
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — 320px – 374px (móviles más pequeños: 320px)
+   ============================================================ */
+@media (max-width: 374px) {
+
+  /* NAV logo: reducir tamaño del texto para dejar espacio */
+  .nav-logo-brand {
+    font-size: 18px;
+  }
+
+  /* NAV: el toggle de tema reducido */
+  .theme-toggle {
+    width: 44px;
+    height: 24px;
+  }
+  .theme-toggle::after {
+    width: 16px;
+    height: 16px;
+  }
+  [data-theme="dark"] .theme-toggle::after {
+    transform: translateX(20px);
+  }
+
+  /* HERO: título clamp mínimo más ajustado */
+  .hero-title {
+    font-size: clamp(52px, 14vw, 64px);
+  }
+
+  /* HERO stats: gap mínimo */
+  #hero .flex.gap-8 {
+    gap: 12px;
+  }
+
+  /* HERO stat separadores */
+  #hero .flex.gap-8 > div[style*="width:1px"] {
+    display: none;
+  }
+
+  /* HERO desc: sin max-width fija que pueda causar problemas */
+  .hero-desc {
+    max-width: 100%;
+  }
+
+  /* AVATAR: limitar ancho del contenedor SVG para no salirse del panel */
+  #avatar-container {
+    width: 200px !important;
+  }
+  #avatar-svg {
+    width: 200px !important;
+    height: auto !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — 375px – 424px (iPhone SE y similares)
+   ============================================================ */
+@media (min-width: 375px) and (max-width: 424px) {
+
+  /* HERO orb: tamaño moderado */
+  .hero-orb {
+    width: 240px;
+    height: 240px;
+  }
+  .hero-orb-ring svg {
+    width: 120px !important;
+    height: 120px !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — 425px – 767px (móviles medianos y grandes)
+   ============================================================ */
+@media (min-width: 425px) and (max-width: 767px) {
+
+  /* NAV: emojis decorativos del toggle ocultos */
+  .nav-wrap nav span[aria-hidden="true"] {
+    display: none;
+  }
+
+  /* NAV: CTA botón compacto */
+  .cta-nav {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  /* HERO: padding ajustado */
+  #hero {
+    padding-top: 64px;
+    padding-bottom: 48px;
+    min-height: auto;
+  }
+
+  /* HERO orb: tamaño intermedio */
+  .hero-orb {
+    width: 260px;
+    height: 260px;
+  }
+  .hero-orb-ring svg {
+    width: 130px !important;
+    height: 130px !important;
+  }
+  .hero-orb-ring::after {
+    inset: -26px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — 768px – 1023px (tablets)
+   ============================================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  /* HERO: padding horizontal ligeramente mayor */
+  #hero {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* HERO orb: tamaño intermedio para tablet */
+  .hero-orb {
+    width: 280px;
+    height: 280px;
+  }
+  .hero-orb-ring svg {
+    width: 145px !important;
+    height: 145px !important;
+  }
+
+  /* NAV: reducir gap del grupo de controles */
+  .nav-wrap nav > div.flex.items-center.gap-2 {
+    gap: 6px;
+  }
+
+  /* PROBADOR: el panel de avatar es un poco más angosto en tablet */
+  .lg\:w-\[300px\] {
+    width: 260px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — 1024px – 1439px (laptops y escritorio estándar)
+   ============================================================ */
+@media (min-width: 1024px) and (max-width: 1439px) {
+
+  /* HERO orb: tamaño completo asegurado */
+  .hero-orb {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — 1440px+ (pantallas grandes)
+   ============================================================ */
+@media (min-width: 1440px) {
+
+  /* Padding horizontal generoso en pantallas grandes */
+  .max-w-7xl.mx-auto.px-4 {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  /* HERO orb: tamaño original mantenido */
+  .hero-orb {
+    width: 320px;
+    height: 320px;
+  }
+}
+
+
+/* ============================================================
+   MOBILE MENU — HAMBURGER + DRAWER
+   ============================================================ */
+
+/* Hamburger button */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background .18s, border-color .18s;
+}
+.hamburger-btn:hover {
+  background: var(--surface3);
+  border-color: var(--brand-border);
+}
+@media (max-width: 767px) {
+  .hamburger-btn {
+    display: flex;
+  }
+}
+
+/* Hamburger bars */
+.ham-bar {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: var(--text-mid);
+  border-radius: 2px;
+  transform-origin: center;
+  transition: transform .28s cubic-bezier(.22,1,.36,1),
+              opacity .2s,
+              width .22s;
+}
+
+/* Active state → X */
+.hamburger-btn.active .ham-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger-btn.active .ham-bar:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+.hamburger-btn.active .ham-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile drawer panel */
+#mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 49;
+  background: var(--surface);
+  border-bottom: 1.5px solid var(--border);
+  box-shadow: 0 16px 48px rgba(0,0,0,.35);
+  padding: 80px 24px 24px;
+  transform: translateY(-110%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform .32s cubic-bezier(.22,1,.36,1),
+              opacity .28s ease,
+              visibility 0s linear .32s;
+}
+#mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  transition: transform .32s cubic-bezier(.22,1,.36,1),
+              opacity .28s ease,
+              visibility 0s linear 0s;
+}
+@media (min-width: 768px) {
+  #mobile-menu {
+    display: none !important;
+  }
+}
+
+/* Nav links inside drawer */
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mob-link {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-mid);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 10px;
+  transition: background .18s, color .18s, transform .18s;
+  letter-spacing: -.01em;
+}
+.mob-link:hover,
+.mob-link:focus-visible {
+  background: var(--surface2);
+  color: var(--text-hi);
+  transform: translateX(4px);
+  outline: none;
+}
+.mob-link:first-child {
+  color: var(--brand);
+}
+
+/* CTA button in drawer */
+.mob-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px 20px;
+  background: var(--brand);
+  color: var(--brand-text);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: .06em;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .18s, transform .15s, box-shadow .18s;
+  box-shadow: 0 4px 16px var(--brand-glow);
+}
+.mob-cta:hover {
+  background: var(--brand-hi);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--brand-glow);
+}
+.mob-cta svg {
+  flex-shrink: 0;
+}
+
+/* Backdrop */
+#mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 48;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .28s ease, visibility 0s linear .28s;
+  cursor: pointer;
+}
+#mobile-menu-backdrop.visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .28s ease, visibility 0s linear 0s;
+}
+@media (min-width: 768px) {
+  #mobile-menu-backdrop {
+    display: none !important;
+  }
+}
+
+/* ── Fila de redes sociales en drawer móvil ── */
+.mob-social-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.mob-social-row .nav-icon-btn {
+  width: 40px;
+  height: 40px;
+}
+
+/* ── Nav hide/show ── */
+.nav-wrap.nav-hidden {
+  transform: translateY(-110%);
+}
+
+/* ── Scroll progress bar ── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #c8f135, #a0d020);
+  z-index: 9999;
+  transition: width .1s linear;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px #c8f13580;
 }
